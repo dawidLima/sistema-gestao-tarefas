@@ -5,3 +5,5 @@ build/
 *.log
 .idea/
 .vscode/
+
+.env
