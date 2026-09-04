@@ -32,7 +32,10 @@ export default function DetalheProjeto() {
       get(`/tarefas?projetoId=${id}`).then(setTarefas)
     })
   }
-
+const tarefasFiltradas =
+  filtroStatus === 'TODAS'
+    ? tarefas
+    : tarefas.filter((t) => t.status === filtroStatus)
   if (!projeto) return <p>Carregando...</p>
 
   return (
@@ -53,7 +56,7 @@ export default function DetalheProjeto() {
       <Link to={`/projetos/${id}/tarefas/nova`}><button>Nova tarefa</button></Link>
 
       <div style={{ marginTop: 16 }}>
-        {tarefas.map((t) => (
+        {tarefasFiltradas.map((t) => (
           <div key={t.id} className="card" style={{ borderLeft: `6px solid ${CORES_PRIORIDADE[t.prioridade]}` }}>
             <strong>{t.titulo}</strong> — {t.status}
             <div>Prioridade: {t.prioridade}</div>
