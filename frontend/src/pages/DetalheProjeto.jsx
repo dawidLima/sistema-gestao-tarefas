@@ -3,11 +3,9 @@ import { useParams, Link } from 'react-router-dom'
 import { get, del } from '../services/api'
 
 const CORES_PRIORIDADE = {
-  // BUG: cores trocadas -- ALTA deveria ser vermelho (urgente) e BAIXA verde (tranquilo),
-  // mas aqui esta invertido.
-  ALTA: '#16a34a',
+  ALTA: '#dc2626',
   MEDIA: '#f59e0b',
-  BAIXA: '#dc2626',
+  BAIXA: '#16a34a',
 }
 
 export default function DetalheProjeto() {
