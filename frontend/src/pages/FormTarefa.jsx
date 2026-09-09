@@ -1,10 +1,18 @@
-import { useEffect, useState } from 'react'
+﻿import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { get, post, put } from '../services/api'
 
 export default function FormTarefa() {
   const { id, projetoId } = useParams()
   const navigate = useNavigate()
+
+  const hoje = new Date()
+  const dataHoje = [
+    hoje.getFullYear(),
+    String(hoje.getMonth() + 1).padStart(2, '0'),
+    String(hoje.getDate()).padStart(2, '0'),
+  ].join('-')
+
   const [form, setForm] = useState({
     projetoId: projetoId || '',
     titulo: '',
@@ -26,7 +34,12 @@ export default function FormTarefa() {
 
   function handleSubmit(e) {
     e.preventDefault()
-    // BUG: nao valida se dataLimite esta no passado antes de salvar
+
+    if (form.dataLimite && form.dataLimite < dataHoje) {
+      alert('A data limite não pode estar no passado.')
+      return
+    }
+
     if (id) {
       put(`/tarefas/${id}`, form).then(() => navigate(-1))
     } else {
@@ -37,35 +50,63 @@ export default function FormTarefa() {
   return (
     <div>
       <h1>{id ? 'Editar Tarefa' : 'Nova Tarefa'}</h1>
+
       <form className="card" onSubmit={handleSubmit}>
         <div className="field">
           <label>Titulo</label>
-          <input name="titulo" value={form.titulo} onChange={handleChange} />
+          <input
+            name="titulo"
+            value={form.titulo}
+            onChange={handleChange}
+          />
         </div>
+
         <div className="field">
           <label>Descricao</label>
-          <textarea name="descricao" value={form.descricao} onChange={handleChange} />
+          <textarea
+            name="descricao"
+            value={form.descricao}
+            onChange={handleChange}
+          />
         </div>
+
         <div className="field">
           <label>Status</label>
-          <select name="status" value={form.status} onChange={handleChange}>
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+          >
             <option value="PENDENTE">Pendente</option>
             <option value="EM_ANDAMENTO">Em andamento</option>
             <option value="CONCLUIDA">Concluida</option>
           </select>
         </div>
+
         <div className="field">
           <label>Prioridade</label>
-          <select name="prioridade" value={form.prioridade} onChange={handleChange}>
+          <select
+            name="prioridade"
+            value={form.prioridade}
+            onChange={handleChange}
+          >
             <option value="BAIXA">Baixa</option>
             <option value="MEDIA">Media</option>
             <option value="ALTA">Alta</option>
           </select>
         </div>
+
         <div className="field">
           <label>Data limite</label>
-          <input type="date" name="dataLimite" value={form.dataLimite || ''} onChange={handleChange} />
+          <input
+            type="date"
+            name="dataLimite"
+            min={dataHoje}
+            value={form.dataLimite || ''}
+            onChange={handleChange}
+          />
         </div>
+
         <button type="submit">Salvar</button>
       </form>
     </div>
